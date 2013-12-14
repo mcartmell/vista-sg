@@ -42,6 +42,10 @@ group :production do
   gem 'pg'
 end
 
+group :development do
+  gem 'sqlite3'
+end
+
 # Use Capistrano for deployment
 # gem 'capistrano', group: :development
 
