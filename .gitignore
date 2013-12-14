@@ -1,5 +1,6 @@
 data/geo
 
+.env
 *.rbc
 *.sassc
 .sass-cache
@@ -14,7 +15,6 @@ capybara-*.html
 **.orig
 rerun.txt
 pickle-email-*.html
-config/initializers/secret_token.rb
 
 ## Environment normalisation:
 /.bundle
