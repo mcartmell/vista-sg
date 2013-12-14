@@ -1,7 +1,7 @@
 require 'json'
 require 'mongo'
 include Mongo
-client = MongoClient.new
+client = Vista::Utils.mongodb
 db = client['vista']
 
 types = {
