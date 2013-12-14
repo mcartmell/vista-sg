@@ -7,7 +7,19 @@ module Utils
   end
 
   def self.mongodb
-    @mongo_client ||= MongoClient.new
+    return @mongo_db if @mongo_db
+    mongo_client =
+    if ENV['MONGOHQ_URL']
+      db = URI.parse(ENV['MONGOHQ_URL'])
+      db_name = db.path.gsub(/^\//, '')
+      db_connection = Mongo::Connection.new(db.host, db.port).db(db_name)
+      db_connection.authenticate(db.user, db.password) unless (db.user.nil? || db.user.nil?)
+      db_connection
+    else
+      MongoClient.new
+    end
+    @mongo_db = mongo_client
+    @mongo_db
   end
 
   def mongodb
