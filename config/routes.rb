@@ -1,4 +1,5 @@
 Vista::Application.routes.draw do
+  get '/geo/whereami' => 'geo#whereami'
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 
