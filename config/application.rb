@@ -8,7 +8,9 @@ Bundler.require(:default, Rails.env)
 
 module Vista
   class Application < Rails::Application
-    config.autoload_paths += %W(#{config.root}/lib/vista)
+    $LOAD_PATH << Rails.root.join('lib')
+    require 'vista'
+
     # Settings in config/environments/* take precedence over those specified here.
     # Application configuration should go into files in config/initializers
     # -- all .rb files in that directory are automatically loaded.
