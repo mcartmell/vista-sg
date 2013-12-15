@@ -1,5 +1,13 @@
 Vista::Application.routes.draw do
+  devise_for :admins
   get '/geo/whereami' => 'geo#whereami'
+  namespace :admin do
+    get '/vistas/new' => 'vistas#new'
+    get '/vistas' => 'vistas#list'
+    get '/vistas/:id' => 'vistas#show'
+    post '/vistas' => 'vistas#create'
+    delete '/vistas/:id' => 'vistas#remove'
+  end
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 

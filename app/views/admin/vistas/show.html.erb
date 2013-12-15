@@ -1,0 +1,29 @@
+<h1>Vistas</h1>
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Lat</th>
+      <th>Lon</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+  <% @vistas.keys.sort.each do |area| %>
+    <tr>
+      <th colspan="4">
+        <%= area %>
+      </th>
+    </tr>
+    <% @vistas[area].each do |vista| %>
+      <tr>
+        <td><%= vista['name'] %></td>
+        <td><%= vista['coordinates'][1] %></td>
+        <td><%= vista['coordinates'][0] %></td>
+        <td><%= link_to 'delete', "/admin/vistas/#{vista['_id'].to_s", method: 'delete' %></td>
+      </tr>
+    <% end %>
+  <% end %>
+<% end %>
+  </tbody>
+</table>

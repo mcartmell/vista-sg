@@ -1,0 +1,11 @@
+<h1>Add vista</h1>
+<%= form_tag('/admin/vistas') do %>
+  <%= text_field_tag(:name, nil, placeholder: 'name', size: 40) %><br />
+  <%= text_field_tag(:lat, nil, placeholder: 'lat') %><br />
+  <%= text_field_tag(:lon, nil, placeholder: 'lon') %><br />
+  Description:<br />
+  <%= text_area_tag(:description, nil, size: '60x10') %><br />
+  Directions:<br />
+  <%= text_area_tag(:directions, nil, size: '60x10') %><br />
+  <%= submit_tag %>
+<% end %>

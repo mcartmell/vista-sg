@@ -3,20 +3,21 @@ module Vista
     extend Utils
 
     def self.remove_vista(vista_id)
+      v = coll('vistas').find_one(vista_id)
+      lat = v['geometry']['coordinates'][1]
+      lat = v['geometry']['coordinates'][0]
+
       # remove from vista table
       coll('vistas').remove({ _id: vista_id })
 
       # remove from areas
-      Vista::Geo.new.find_places_for_coords(lat, long).each do |area|
-        coll('areas').update({
-          _id: area['_id']
-        },
-        {
-          '$pull' => {
-            vistas: vista_id
-          }
-        })
-      end
+      coll('areas').update({
+      },
+      {
+        '$pull' => {
+          vistas: vista_id
+        }
+      })
     end
 
     # Find vistas and details for a given area name. Note that one area name
@@ -35,6 +36,20 @@ module Vista
         all_vistas.push(Vista::Vistas.find_vistas(area['vistas']))
       end
       return all_vistas.flatten
+    end
+
+    def self.all_vistas_by_area_detailed
+      return _all_vistas_by_area_detailed
+    end
+
+    def self._all_vistas_by_area_detailed
+      area_vistas = {}
+      all_areas = coll('areas').find.to_a.map {|a| a['name']}.uniq
+      all_areas.each do |name|
+        area_vistas[name] ||= []
+        area_vistas[name] += _find_vistas(name)
+      end
+      return area_vistas
     end
 
     # Return a list of all the vista ids keyed by area. This can be cached too.
@@ -63,8 +78,6 @@ module Vista
         directions: directions
       })
       Vista::Geo.new.find_places_for_coords(lat, long).each do |area|
-        puts area['_id']
-        puts area['name']
         coll('areas').update({
           _id: area['_id']
         },
