@@ -11,19 +11,19 @@ types = {
 }
 
 
-coll = db['areas']
-coll.ensure_index([[:geometry, Mongo::GEO2DSPHERE]])
-coll.ensure_index([:name])
 
 coll = db['users']
-coll.ensure_index([:email])
+coll.ensure_index(:email)
 
 coll = db['vistas']
 coll.ensure_index([[:geometry, Mongo::GEO2DSPHERE]])
 import_areas = false
 
 if import_areas
+  coll = db['areas']
   coll.drop
+  coll.ensure_index([[:geometry, Mongo::GEO2DSPHERE]])
+  coll.ensure_index(:name)
   types.each do |size, v|
     # initialize collection
 

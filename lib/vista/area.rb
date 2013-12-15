@@ -17,6 +17,9 @@ module Vista
         '$pull' => {
           vistas: vista_id
         }
+      },
+      {
+        multi: true
       })
     end
 
@@ -24,15 +27,16 @@ module Vista
     # can have multiple polygon areas (eg. to include islands)
     #
     # This can be cached btw
-    def self.find_vistas(area_name)
-      Rails.cache.fetch("vistas_for_#{area_name}", expires_in: 5.minutes) { _find_vistas(area_name) }
+    def self.find_vistas(area_name, opts = {})
+      Rails.cache.fetch("vistas_for_#{area_name}", expires_in: 5.minutes) { _find_vistas(area_name, opts) }
     end
 
-    def self._find_vistas(area_name)
+    def self._find_vistas(area_name, opts)
       all_vistas = []
-      coll('areas').find({
-        name: area_name
-      }).each do |area|
+      opts = { name: area_name }.merge(opts)
+      coll('areas').find(
+        opts
+      ).each do |area|
         all_vistas.push(Vista::Vistas.find_vistas(area['vistas']))
       end
       return all_vistas.flatten
@@ -44,10 +48,10 @@ module Vista
 
     def self._all_vistas_by_area_detailed
       area_vistas = {}
-      all_areas = coll('areas').find.to_a.map {|a| a['name']}.uniq
+      all_areas = coll('areas').find({ size: 2 }).to_a.map {|a| a['name']}.uniq
       all_areas.each do |name|
         area_vistas[name] ||= []
-        area_vistas[name] += _find_vistas(name)
+        area_vistas[name] += _find_vistas(name, size: 2)
       end
       return area_vistas
     end
@@ -68,15 +72,25 @@ module Vista
     end
 
     def self.add_vista(name, lat, long, description = '', directions = '')
-      vista_id = coll('vistas').insert({
-        name: name,
-        geometry: {
-          type: 'Point',
-          coordinates: [long, lat]
+      res = coll('vistas').update(
+        {
+          name: name,
         },
-        description: description,
-        directions: directions
-      })
+        {
+          name: name,
+          geometry: {
+            type: 'Point',
+            coordinates: [long, lat]
+          },
+          description: description,
+          directions: directions
+        },
+        {
+          upsert: true
+        }
+      )
+      return if res['updatedExisting']
+      vista_id = res['upserted']
       Vista::Geo.new.find_places_for_coords(lat, long).each do |area|
         coll('areas').update({
           _id: area['_id']
@@ -89,7 +103,34 @@ module Vista
           }
         )
       end
-      true
+      return true
+    end
+
+    # Run this when vista locations or area boundaries have been updated
+    # Will clear vistas array for every area and repopulate it from geography.
+    # When adding and removing vistas normally this isn't required.
+
+    def self.recalculate_area_vistas
+      coll('areas').find.each do |area|
+        area_vistas = coll('vistas').find({
+          geometry: {
+            '$geoWithin' => {
+              '$geometry' => area['geometry']
+            }
+          }
+        }, {:fields => [:_id]}).to_a.map{|v| v['_id']}
+
+        next if area_vistas.empty?
+        puts "Updating #{area['name']} to #{area_vistas.inspect}"
+        coll('areas').update({
+          _id: area['_id']
+        },
+        {
+          '$set' => {
+            'vistas' => area_vistas
+          }
+        })
+      end
     end
   end
 end

@@ -7,3 +7,10 @@
 #   Mayor.create(name: 'Emanuel', city: cities.first)
 admin_pw = ENV['DEFAULT_ADMIN_PW']
 Admin.create(email: 'mike@mikec.me', password: admin_pw)
+
+# Upsert vistas and update areas
+load Rails.root.join('db/seeds/vistas.rb')
+Vistas.each do |vista|
+  Vista::Area.add_vista(vista[:name], vista[:lat], vista[:lon])
+end
+Vista::Area.recalculate_area_vistas
