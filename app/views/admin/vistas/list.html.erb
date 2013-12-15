@@ -21,7 +21,9 @@
         <td><%= vista['name'] %></td>
         <td><%= vista['geometry']['coordinates'][1] %></td>
         <td><%= vista['geometry']['coordinates'][0] %></td>
-        <td><%= link_to 'delete', "/admin/vistas/#{vista['_id'].to_s}", method: 'delete' %></td>
+        <td>
+          <%= link_to 'edit', "/admin/vistas/#{vista['_id'].to_s}" %>
+          <%= link_to 'delete', "/admin/vistas/#{vista['_id'].to_s}", method: 'delete' %></td>
       </tr>
     <% end %>
   <% end %>

@@ -8,6 +8,7 @@ Vista::Application.routes.draw do
     get '/vistas' => 'vistas#list'
     get '/vistas/:id' => 'vistas#show'
     post '/vistas' => 'vistas#create'
+    put '/vistas' => 'vistas#update'
     delete '/vistas/:id' => 'vistas#remove'
   end
   # The priority is based upon order of creation: first created -> highest priority.
