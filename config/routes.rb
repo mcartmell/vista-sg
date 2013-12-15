@@ -1,6 +1,8 @@
 Vista::Application.routes.draw do
   devise_for :admins
   get '/geo/whereami' => 'geo#whereami'
+  get '/geo/vistas' => 'geo#find_vistas'
+
   namespace :admin do
     get '/vistas/new' => 'vistas#new'
     get '/vistas' => 'vistas#list'

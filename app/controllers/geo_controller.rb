@@ -10,4 +10,12 @@ class GeoController < ApplicationController
     }
     render json: r
   end
+
+  def find_vistas
+    lat = params[:lat].to_f
+    lon = params[:lon].to_f
+    vg = Vista::Geo.new
+    res = vg.find_vistas_for_point(lat, lon)
+    render json: res
+  end
 end

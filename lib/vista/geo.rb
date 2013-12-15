@@ -16,5 +16,19 @@ module Vista
       all = find_places_for_coords(*a)
       return all.max_by{|x| x['size']}
     end
+
+    def current_area(lat, lon)
+      area = find_places_for_coords(lat, lon).find{|e| e['size'] == 2}
+      return area
+    end
+
+    def find_vistas_for_point(lat, lon)
+      area = current_area(lat, lon)
+      # Find area
+      return {
+        area: area,
+        vistas: Vista::Area.find_vistas(area['name'])
+      }
+    end
   end
 end
