@@ -109,7 +109,6 @@ module Vista
     # Run this when vista locations or area boundaries have been updated
     # Will clear vistas array for every area and repopulate it from geography.
     # When adding and removing vistas normally this isn't required.
-
     def self.recalculate_area_vistas
       coll('areas').find.each do |area|
         area_vistas = coll('vistas').find({

@@ -3,10 +3,11 @@ class GeoController < ApplicationController
   def whereami
     lat = params[:lat].to_f
     lon = params[:lon].to_f
+    logger.info(params)
     vg = Vista::Geo.new
     place = vg.find_smallest_place_for_coords(lat, lon)
     r = {
-      name: place['name']
+      name: place ? place['name'] : 'Unknown'
     }
     render json: r
   end

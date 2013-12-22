@@ -34,6 +34,7 @@ gem 'mongo'
 gem 'bson_ext'
 gem 'dalli'
 gem 'devise'
+gem 'simple_token_authentication'
 
 # Use ActiveModel has_secure_password
 # gem 'bcrypt-ruby', '~> 3.0.0'
