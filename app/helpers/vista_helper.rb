@@ -1,0 +1,2 @@
+module VistaHelper
+end

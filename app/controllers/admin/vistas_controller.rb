@@ -1,5 +1,6 @@
 class Admin::VistasController < ApplicationController
   before_filter :authenticate_admin!
+  skip_before_filter :authenticate_user!
   include Vista::Utils
 
   def list

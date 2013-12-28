@@ -1,9 +1,20 @@
 Vista::Application.routes.draw do
   devise_for :users
   devise_for :admins
+
+  # client api
   get '/geo/whereami' => 'geo#whereami'
   get '/geo/vistas' => 'geo#find_vistas'
+  get '/vistas/:vista_id' => 'vista#vista_details'
+  post '/vistas/:vista_id/photo' => 'vista#upload_photo'
 
+  # client registration api
+  namespace "api/v1", as: :api do
+    post '/register' => 'registration#create'
+    post '/login' => 'registration#login'
+  end
+
+  # admin web
   namespace :admin do
     get '/vistas/new' => 'vistas#new'
     get '/vistas' => 'vistas#list'
@@ -13,10 +24,6 @@ Vista::Application.routes.draw do
     delete '/vistas/:id' => 'vistas#remove'
   end
 
-  namespace "api/v1", as: :api do
-    post '/register' => 'registration#create'
-    post '/login' => 'registration#login'
-  end
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 
