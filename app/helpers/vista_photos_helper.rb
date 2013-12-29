@@ -1,0 +1,2 @@
+module VistaPhotosHelper
+end

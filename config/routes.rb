@@ -5,8 +5,6 @@ Vista::Application.routes.draw do
   # client api
   get '/geo/whereami' => 'geo#whereami'
   get '/geo/vistas' => 'geo#find_vistas'
-  get '/vistas/:vista_id' => 'vista#vista_details'
-  post '/vistas/:vista_id/photo' => 'vista#upload_photo'
 
   # client registration api
   namespace "api/v1", as: :api do
@@ -22,6 +20,14 @@ Vista::Application.routes.draw do
     post '/vistas' => 'vistas#create'
     put '/vistas' => 'vistas#update'
     delete '/vistas/:id' => 'vistas#remove'
+  end
+
+  resources :vistas do
+    resources :vista_photos do
+      collection do
+        get 'list_user'
+      end
+    end
   end
 
   # The priority is based upon order of creation: first created -> highest priority.

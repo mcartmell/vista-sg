@@ -2,6 +2,12 @@ module Vista
   class User
     extend Vista::Utils
 
+    def self.visited?(email, vista_id)
+      user = coll('users').find_one({ email: email })
+      visits = user['visits'] || []
+      return visits.any? {|vista| vista == vista_id}
+    end
+
     # Return statistics on vistas achieved by area
     def self.stats_total(user_id)
       all_areas = Vista::Area.all_vistas_by_area
@@ -32,7 +38,7 @@ module Vista
       {
         :fields => [:photos]
       })
-      return if vistas.count == 0
+      return [] if vistas.count == 0
       photos = vistas.first['photos']
       return inflate_photos(vista_id, photos)
     end

@@ -3,7 +3,7 @@ module Vista
     extend Utils
 
     def self.find(vista_id)
-      coll('vistas').find({
+      vista = coll('vistas').find({
         _id: vista_id
       }).first
     end
@@ -16,7 +16,7 @@ module Vista
     end
 
     def self.add_photo(vista_id, user_email, photo_id, approved = false)
-      coll('vistas').update({ _id: BSON::ObjectId(vista_id)},
+      coll('vistas').update({ _id: vista_id },
         {
           "$push" => {
             photos: {
