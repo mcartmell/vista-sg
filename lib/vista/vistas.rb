@@ -14,5 +14,18 @@ module Vista
         _id: {'$in' => vista_ids}
       }).to_a
     end
+
+    def self.add_photo(vista_id, user_email, photo_id, approved = false)
+      coll('vistas').update({ _id: BSON::ObjectId(vista_id)},
+        {
+          "$push" => {
+            photos: {
+              user_email: user_email,
+              photo_id: photo_id,
+              approved: approved
+            }
+          }
+        })
+    end
   end
 end

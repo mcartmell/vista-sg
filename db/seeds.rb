@@ -14,3 +14,13 @@ Vistas.each do |vista|
   Vista::Area.add_vista(vista[:name], vista[:lat], vista[:lon])
 end
 Vista::Area.recalculate_area_vistas
+
+client = Vista::Utils.mongodb
+db = client['vista']
+
+# Set indexes
+users = db['users']
+users.ensure_index(:email)
+
+areas = db['vistas']
+areas.ensure_index('photos.user_email')

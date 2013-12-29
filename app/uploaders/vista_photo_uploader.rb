@@ -2,23 +2,37 @@
 require 'uuid'
 
 class VistaPhotoUploader < CarrierWave::Uploader::Base
+  include CarrierWave::MimeTypes
   include CarrierWave::RMagick
 
-  attr_accessor :current_user, :vista_id
+  attr_accessor :current_user, :vista_id, :name
+
   process :fix_exif_rotation
+  process :set_content_type
 
   # Include RMagick or MiniMagick support:
   # include CarrierWave::RMagick
   # include CarrierWave::MiniMagick
 
   # Choose what kind of storage to use for this uploader:
-  storage :file
-  # storage :fog
+  storage :fog
 
   # Override the directory where uploaded files will be stored.
   # This is a sensible default for uploaders that are meant to be mounted:
   def store_dir
-    "uploads/#{current_user.id}/#{vista_id}"
+    "uploads/#{current_user.id}/#{vista_id}/"
+  end
+
+  def thumb
+    thumb = VistaThumbUploader.new
+    thumb.current_user = current_user
+    thumb.vista_id = vista_id
+    thumb.name = name
+    return thumb
+  end
+
+  def store_thumb!(file)
+    thumb.store!(file)
   end
 
   # Provide a default URL as a default if there hasn't been a file uploaded:
@@ -36,11 +50,6 @@ class VistaPhotoUploader < CarrierWave::Uploader::Base
   #   # do something
   # end
 
-  # Create different versions of your uploaded files:
-  # version :thumb do
-  #   process :scale => [50, 50]
-  # end
-
   # Add a white list of extensions which are allowed to be uploaded.
   # For images you might use something like this:
   # def extension_white_list
@@ -48,7 +57,12 @@ class VistaPhotoUploader < CarrierWave::Uploader::Base
   # end
 
   def filename
-    "#{uuid}.jpg"
+    @name ||= "#{uuid}.jpg"
+  end
+
+  def store_with_thumb(file)
+    store!(file)
+    store_thumb!(file)
   end
 
   protected
@@ -60,3 +74,12 @@ class VistaPhotoUploader < CarrierWave::Uploader::Base
   end
 
 end
+
+class VistaThumbUploader < VistaPhotoUploader
+  process :resize_to_fill => [120, 120]
+
+  def store_dir
+    "uploads/#{current_user.id}/#{vista_id}/thumbs/"
+  end
+end
+

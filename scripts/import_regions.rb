@@ -10,11 +10,6 @@ types = {
   'areas_sm' => {key: 'SUBZONE_N', parent_key: 'PLN_AREA_N', size: 3}
 }
 
-
-
-coll = db['users']
-coll.ensure_index(:email)
-
 coll = db['vistas']
 coll.ensure_index([[:geometry, Mongo::GEO2DSPHERE]])
 import_areas = false

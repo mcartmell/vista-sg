@@ -1,4 +1,17 @@
 #config/initializers/carrierwave.rb
+require 'carrierwave/processing/mime_types'
+
+CarrierWave.configure do |config|
+  config.fog_credentials = {
+    :provider           => 'Rackspace',
+    :rackspace_username => ENV['RACKSPACE_API_USER'],
+    :rackspace_api_key  => ENV['RACKSPACE_API_KEY'],
+    :rackspace_auth_url  => Fog::Rackspace::UK_AUTH_ENDPOINT,
+    :rackspace_region   => :lon
+  }
+  config.fog_directory = 'vista'
+  config.asset_host = "http://2786eafd427007dab145-efa4db97e5df5562a1d80df74ac5e046.r30.cf3.rackcdn.com"
+end
 
 module CarrierWave
   module RMagick

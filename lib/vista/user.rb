@@ -23,5 +23,34 @@ module Vista
       end
       return stats
     end
+
+    def self.get_photos_for_vista(email, vista_id)
+      vistas = coll('vistas').find({
+        "_id" => vista_id,
+        "photos.user_email" => email
+      },
+      {
+        :fields => [:photos]
+      })
+      return if vistas.count == 0
+      photos = vistas.first['photos']
+      return inflate_photos(vista_id, photos)
+    end
+
+    def self.add_visit(email, vista_id)
+        coll('users').update({
+          email: email
+        },
+          {
+            '$addToSet' =>
+            {
+              'visits' => vista_id
+            }
+          },
+          {
+            upsert: true
+          }
+        )
+    end
   end
 end

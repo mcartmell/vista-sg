@@ -13,7 +13,16 @@ class VistaController < ApplicationController
     vista_id = params[:vista_id]
     uploader = VistaPhotoUploader.new
     uploader.current_user = current_user
-    res = uploader.store!(photo)
-    render json: res
+    uploader.vista_id = vista_id
+
+    # thumbnail
+    res = uploader.store_with_thumb(photo)
+
+    # Add photo and add to user visits
+    user_email = current_user.email
+    photo_id = uploader.identifier
+    Vista::Vistas.add_photo(vista_id, user_email, photo_id)
+    Vista::User.add_visit(user_email, vista_id)
+    render json: { success: true }
   end
 end
