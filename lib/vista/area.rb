@@ -2,6 +2,10 @@ module Vista
   class Area
     extend Utils
 
+    def self.list
+      coll('areas').find()
+    end
+
     def self.remove_vista(vista_id)
       v = coll('vistas').find_one(vista_id)
       lat = v['geometry']['coordinates'][1]

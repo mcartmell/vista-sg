@@ -69,7 +69,7 @@ module Vista
           pct: total_vistas > 0 ? (total_visited / total_vistas.to_f).round(2) : nil
         })
       end
-      return stats
+      return stats.sort_by {|s| s[:area_name]}
     end
 
     def self.get_photos_for_vista(email, vista_id)

@@ -22,11 +22,18 @@ class User < ActiveRecord::Base
     return Vista::User.visits(email)
   end
 
+  # stats for a single area
   def stats_for_area(area_name)
     return Vista::User.stats_area(email, area_name)
   end
 
+  # summary of stats for all areas
   def profile_stats
     return Vista::User.profile_stats(email)
+  end
+
+  # stats by area
+  def area_stats
+    return Vista::User.stats_total(email)
   end
 end

@@ -24,6 +24,7 @@ Vista::Application.routes.draw do
 
   resource :user do
     get 'profile' 
+    get 'area_stats'
   end
 
   resources :vistas do
