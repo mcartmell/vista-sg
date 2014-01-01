@@ -1,6 +1,24 @@
+require 'polylines'
+
 module Vista
   class Area
     extend Utils
+    STATIC_MAP_WIDTH=200
+    STATIC_MAP_HEIGHT=160
+
+    def self.static_map(area_name)
+      area = coll('areas').find_one(name: area_name, size: 2)
+      polys = area['geometry']['coordinates'].map do |poly|
+        poly.map do |pair|
+          pair = [pair[1], pair[0]]
+        end
+      end
+
+      encoded = polys.map {|p| Polylines::Encoder.encode_points(p) }
+      first_poly = encoded.first
+      url = "http://maps.googleapis.com/maps/api/staticmap?sensor=false&size=#{STATIC_MAP_WIDTH}x#{STATIC_MAP_HEIGHT}&path=fillcolor:0xAA000033%7Ccolor:0xFFFFFF00%7Cenc:#{first_poly}"
+      return url
+    end
 
     def self.list
       coll('areas').find()

@@ -10,6 +10,7 @@ gem 'bson_ext'
 gem 'dalli'
 gem 'devise'
 gem 'simple_token_authentication'
+gem 'polylines'
 
 
 # Use SCSS for stylesheets
