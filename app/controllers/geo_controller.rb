@@ -26,12 +26,21 @@ class GeoController < ApplicationController
   end
 
   def find_vistas
-    lat = params[:lat].to_f
-    lon = params[:lon].to_f
-    vg = Vista::Geo.new
-    res = vg.find_vistas_for_point(lat, lon)
-    logger.info(res)
-    render json: res
+    if params.has_key?(:lat) && params.has_key?(:lon)
+      lat = params[:lat].to_f
+      lon = params[:lon].to_f
+      vg = Vista::Geo.new
+      res = vg.find_vistas_for_point(lat, lon)
+      return render json: res
+    elsif params.has_key?(:area_name)
+      vistas = Vista::Area.find_vistas(params[:area_name])
+      stats = current_user.stats_for_area(params[:area_name])
+      res = { 
+        vistas: vistas
+      }.merge(stats)
+      return render json: res
+    else
+      raise "Invalid params"
+    end
   end
-
 end

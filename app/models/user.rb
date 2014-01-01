@@ -17,4 +17,16 @@ class User < ActiveRecord::Base
   def visited?(vista_id)
     return Vista::User.visited?(email, vista_id)
   end
+
+  def visits
+    return Vista::User.visits(email)
+  end
+
+  def stats_for_area(area_name)
+    return Vista::User.stats_area(email, area_name)
+  end
+
+  def profile_stats
+    return Vista::User.profile_stats(email)
+  end
 end

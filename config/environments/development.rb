@@ -21,7 +21,7 @@ Vista::Application.configure do
 
   # Raise an error on page load if there are pending migrations
   config.active_record.migration_error = :page_load
-  config.cache_store = :dalli_store, '127.0.0.1', { :expires_in => 30.minutes }
+  config.cache_store = :null_store #:dalli_store, '127.0.0.1', { :expires_in => 30.minutes }
 
   # Debug mode disables concatenation and preprocessing of assets.
   # This option may cause significant delays in view rendering with a large

@@ -22,6 +22,10 @@ Vista::Application.routes.draw do
     delete '/vistas/:id' => 'vistas#remove'
   end
 
+  resource :user do
+    get 'profile' 
+  end
+
   resources :vistas do
     resources :vista_photos do
       collection do
