@@ -4,6 +4,10 @@ module Vista
   class User
     extend Vista::Utils
 
+    def self.insert_mongo(email)
+      coll('users').insert({ email: email, visits: []})
+    end
+
     def self.find(email)
       coll('users').find_one({ email: email })
     end

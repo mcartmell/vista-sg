@@ -1,4 +1,6 @@
 class User < ActiveRecord::Base
+  after_create :init_mongodb
+
   acts_as_token_authenticatable
 
   # Include default devise modules. Others available are:
@@ -35,5 +37,9 @@ class User < ActiveRecord::Base
   # stats by area
   def area_stats
     return Vista::User.stats_total(email)
+  end
+
+  def init_mongodb
+    Vista::User.insert_mongo(email)
   end
 end
