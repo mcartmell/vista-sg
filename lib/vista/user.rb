@@ -17,7 +17,7 @@ module Vista
       user['visits'] ||= []
 
       stats = stats_total(email)
-      areas_completed = stats.select {|a| a['pct'] == 100}
+      areas_completed = stats.select {|a| a[:pct] == 100}
       total_areas = stats.size
       total_vistas = stats.map{|a| a[:total]}.inject{|sum,x| sum + x}
       ret = user.merge({
@@ -37,7 +37,7 @@ module Vista
 
     def self.stats_area(email, area_name)
       visits = Set.new visits(email)
-      area_vistas = Set.new Vista::Area.find_vistas(area_name).map {|v| v['_id']}
+      area_vistas = Set.new Vista::Area.find_vistas({ area_name: area_name }).map {|v| v['_id']}
       total = area_vistas.size
       visited = visits & area_vistas
       num_visited = visited.count
@@ -70,7 +70,7 @@ module Vista
           area_name: area,
           visited: total_visited,
           total: total_vistas,
-          pct: total_vistas > 0 ? (total_visited / total_vistas.to_f).round(2) : nil
+          pct: total_vistas > 0 ? ((total_visited / total_vistas.to_f).round(2) * 100) : nil
         })
       end
       return stats.sort_by {|s| s[:area_name]}

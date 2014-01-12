@@ -27,17 +27,27 @@ class GeoController < ApplicationController
 
   def find_vistas
     res = {}
-    if params.has_key?(:lat) && params.has_key?(:lon)
-      lat = params[:lat].to_f
-      lon = params[:lon].to_f
-      vg = Vista::Geo.new
-      res = vg.find_vistas_for_point(lat, lon)
-    elsif params.has_key?(:area_name)
-      vistas = Vista::Area.find_vistas(params[:area_name])
+    lat = params[:lat] ? params[:lat].to_f : nil
+    lon = params[:lon] ? params[:lon].to_f : nil
+    if params.has_key?(:area_name)
+      args = {
+        area_name: params[:area_name]
+      }
+      if lat && lon
+        args[:lat] = lat
+        args[:lon] = lon
+      end
+      vistas = Vista::Area.find_vistas(args)
+      if vistas.size > 0 && vistas[0][:dis]
+        vistas = vistas.sort_by {|v| v[:dis].to_f}
+      end
       stats = current_user.stats_for_area(params[:area_name])
       res = { 
         vistas: vistas
       }.merge(stats)
+    elsif lat && lon
+      vg = Vista::Geo.new
+      res = vg.find_vistas_for_point(lat, lon)
     else
       raise "Invalid params"
     end

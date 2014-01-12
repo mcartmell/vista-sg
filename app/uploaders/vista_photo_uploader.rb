@@ -20,7 +20,7 @@ class VistaPhotoUploader < CarrierWave::Uploader::Base
   # Override the directory where uploaded files will be stored.
   # This is a sensible default for uploaders that are meant to be mounted:
   def store_dir
-    "uploads/#{current_user.id}/#{vista_id}/"
+    "uploads/#{vista_id}/"
   end
 
   def thumb
@@ -57,7 +57,7 @@ class VistaPhotoUploader < CarrierWave::Uploader::Base
   # end
 
   def filename
-    @name ||= "#{uuid}.jpg"
+    @name ||= "#{current_user.id}-#{uuid}.jpg"
   end
 
   def store_with_thumb(file)
@@ -79,7 +79,7 @@ class VistaThumbUploader < VistaPhotoUploader
   process :resize_to_fill => [120, 120]
 
   def store_dir
-    "uploads/#{current_user.id}/#{vista_id}/thumbs/"
+    "uploads/#{vista_id}/thumbs/"
   end
 end
 

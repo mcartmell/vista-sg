@@ -27,8 +27,27 @@ module Vista
       # Find area
       return {
         area: area,
-        vistas: Vista::Area.find_vistas(area['name'])
+        vistas: Vista::Area.find_vistas({ area_name: area['name'] })
       }
+    end
+
+    def self.haversine(lat1, long1, lat2, long2)
+      dtor = Math::PI/180
+      r = 6378.14
+     
+      rlat1 = lat1 * dtor 
+      rlong1 = long1 * dtor 
+      rlat2 = lat2 * dtor 
+      rlong2 = long2 * dtor 
+     
+      dlon = rlong1 - rlong2
+      dlat = rlat1 - rlat2
+     
+      a = (Math::sin(dlat/2) ** 2) + Math::cos(rlat1) * Math::cos(rlat2) * (Math::sin(dlon/2) ** 2)
+      c = 2 * Math::atan2(Math::sqrt(a), Math::sqrt(1-a))
+      d = r * c
+     
+      return d.round(2)
     end
   end
 end

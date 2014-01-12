@@ -3,20 +3,20 @@ require 'polylines'
 module Vista
   class Area
     extend Utils
+
     STATIC_MAP_WIDTH=200
     STATIC_MAP_HEIGHT=160
 
     def self.static_map(area_name)
-      area = coll('areas').find_one(name: area_name, size: 2)
-      polys = area['geometry']['coordinates'].map do |poly|
-        poly.map do |pair|
-          pair = [pair[1], pair[0]]
-        end
+      areas = coll('areas').find(name: area_name, size: 2)
+      area = areas.max_by{|a| a['geometry']['coordinates'][0].size}
+
+      first_poly = area['geometry']['coordinates'][0].map do |pair|
+        pair = [pair[1], pair[0]]
       end
 
-      encoded = polys.map {|p| Polylines::Encoder.encode_points(p) }
-      first_poly = encoded.first
-      url = "http://maps.googleapis.com/maps/api/staticmap?sensor=false&size=#{STATIC_MAP_WIDTH}x#{STATIC_MAP_HEIGHT}&path=fillcolor:0xAA000033%7Ccolor:0xFFFFFF00%7Cenc:#{first_poly}"
+      encoded = Polylines::Encoder.encode_points(first_poly)
+      url = "http://maps.googleapis.com/maps/api/staticmap?sensor=false&size=#{STATIC_MAP_WIDTH}x#{STATIC_MAP_HEIGHT}&path=fillcolor:0xAA000033%7Ccolor:0xFFFFFF00%7Cenc:#{encoded}"
       return url
     end
 
@@ -49,13 +49,15 @@ module Vista
     # can have multiple polygon areas (eg. to include islands)
     #
     # This can be cached btw
-    def self.find_vistas(area_name, opts = {})
-      Rails.cache.fetch("vistas_for_#{area_name}", expires_in: 5.minutes) { _find_vistas(area_name, opts) }
+    def self.find_vistas(q, opts = {})
+      vistas = Rails.cache.fetch("vistas_for_#{q[:area_name]}", expires_in: 5.minutes) { _find_vistas(q, opts) }
+      Vista::Vistas.inflate(vistas, q)
+      return vistas
     end
 
-    def self._find_vistas(area_name, opts)
+    def self._find_vistas(q, opts)
       all_vistas = []
-      opts = { name: area_name }.merge(opts)
+      opts = { name: q[:area_name]}.merge(opts)
       coll('areas').find(
         opts
       ).each do |area|
@@ -73,7 +75,7 @@ module Vista
       all_areas = coll('areas').find({ size: 2 }).to_a.map {|a| a['name']}.uniq
       all_areas.each do |name|
         area_vistas[name] ||= []
-        area_vistas[name] += _find_vistas(name, size: 2)
+        area_vistas[name] += _find_vistas({ area_name: name }, size: 2)
       end
       return area_vistas
     end

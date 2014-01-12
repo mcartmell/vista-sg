@@ -6,5 +6,9 @@
   <%= text_area_tag(:description, @vista['description'], size: '60x10') %><br />
   Directions:<br />
   <%= text_area_tag(:directions, @vista['directions'], size: '60x10') %><br />
+  Main photo:<br />
+  <% @photos.each do |photo| %>
+    <%= radio_button_tag(:default_photo, photo[:id]) %><img src="<%= photo[:thumb] %>" />
+  <% end %>
   <%= submit_tag %>
 <% end %>

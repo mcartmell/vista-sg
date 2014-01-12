@@ -22,16 +22,19 @@ class Admin::VistasController < ApplicationController
 
   def show
     id = BSON::ObjectId(params[:id])
-    @vista = coll('vistas').find_one(id)
+    @vista = Vista::Vistas.find(id)
+    @photos = Vista::Vistas.list_photos(id)
+    logger.info(@photos)
   end
 
   def update
     id = BSON::ObjectId(params[:id])
+    set_params = params.slice(:description, :directions, :name, :default_photo)
     coll('vistas').update({
       _id: id
     },
     {
-      '$set' => params.slice(:description, :directions, :name)
+      '$set' => set_params
     }
     )
     redirect_to action: :list

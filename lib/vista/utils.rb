@@ -31,20 +31,28 @@ module Vista
       mongodb['vista']
     end
 
+    def inflate_photo(vista_id, photo_id)
+      vpu = VistaPhotoUploader.new
+      # string
+      vpu.vista_id = vista_id.to_s
+      vpu.retrieve_from_store!(photo_id)
+      thumb = vpu.thumb
+      thumb.retrieve_from_store!(photo_id)
+      return {
+        thumb: thumb,
+        main: vpu,
+        id: photo_id
+      }
+    end
+
     def inflate_photos(vista_id, photos)
       ret = []
       photos.each do |photo|
-        vpu = VistaPhotoUploader.new
-        email = photo['user_email']
-        vpu.current_user = ::User.find_by(email: email)
-        # string
-        vpu.vista_id = vista_id.to_s
-        vpu.retrieve_from_store!(photo['photo_id'])
-        thumb = vpu.thumb
-        thumb.retrieve_from_store!(photo['photo_id'])
+        ph = inflate_photo(vista_id, photo['photo_id'])
         ret.push({
-          url: vpu.url,
-          thumb: thumb.url
+          id: ph[:id],
+          url: ph[:main].url,
+          thumb: ph[:thumb].url
         })
       end
       return ret
