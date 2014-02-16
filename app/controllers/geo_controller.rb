@@ -29,6 +29,7 @@ class GeoController < ApplicationController
     res = {}
     lat = params[:lat] ? params[:lat].to_f : nil
     lon = params[:lon] ? params[:lon].to_f : nil
+    current_visits = current_user.visits
     if params.has_key?(:area_name)
       args = {
         area_name: params[:area_name]
@@ -41,6 +42,7 @@ class GeoController < ApplicationController
       if vistas.size > 0 && vistas[0][:dis]
         vistas = vistas.sort_by {|v| v[:dis].to_f}
       end
+      vistas.each{|v| v[:visited] = current_visits.include?(v['_id'])}
       stats = current_user.stats_for_area(params[:area_name])
       res = { 
         vistas: vistas

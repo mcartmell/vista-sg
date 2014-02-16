@@ -11,6 +11,7 @@ gem 'dalli'
 gem 'devise'
 gem 'simple_token_authentication'
 gem 'polylines'
+gem 'thin'
 
 
 # Use SCSS for stylesheets
