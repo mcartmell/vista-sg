@@ -1,6 +1,7 @@
 Vista::Application.routes.draw do
   devise_for :users
   devise_for :admins
+  root to: 'admin/vistas#list'
 
   # client api
   get '/geo/whereami' => 'geo#whereami'

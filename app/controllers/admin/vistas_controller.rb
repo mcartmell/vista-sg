@@ -1,6 +1,7 @@
 class Admin::VistasController < ApplicationController
   before_filter :authenticate_admin!
   skip_before_filter :authenticate_user!
+
   include Vista::Utils
 
   def list
@@ -11,10 +12,11 @@ class Admin::VistasController < ApplicationController
   end
 
   def create
+    lat, lon = params[:lat_lon].split(%r{,\s*}).map(&:to_f)
     Vista::Area.add_vista(
       params[:name],
-      params[:lat].to_f,
-      params[:lon].to_f,
+      lat,
+      lon,
       params[:description],
       params[:directions])
     redirect_to action: 'list'

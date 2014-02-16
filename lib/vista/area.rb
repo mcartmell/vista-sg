@@ -4,8 +4,8 @@ module Vista
   class Area
     extend Utils
 
-    STATIC_MAP_WIDTH=200
-    STATIC_MAP_HEIGHT=160
+    STATIC_MAP_WIDTH=360
+    STATIC_MAP_HEIGHT=240
 
     def self.static_map(area_name)
       areas = coll('areas').find(name: area_name, size: 2)

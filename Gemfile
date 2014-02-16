@@ -13,7 +13,6 @@ gem 'simple_token_authentication'
 gem 'polylines'
 gem 'thin'
 
-
 # Use SCSS for stylesheets
 gem 'sass-rails', '~> 4.0.0'
 gem 'bootstrap-sass', '~> 3.0.3.0'
@@ -54,6 +53,7 @@ end
 
 group :development do
   gem 'sqlite3'
+  gem 'rails_layout'
 end
 
 # Use Capistrano for deployment
