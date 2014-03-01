@@ -4,7 +4,7 @@ class Api::V1::RegistrationController < ApplicationController
   skip_before_filter :authenticate_user!, :only => [:create, :login]
 
   def create
-    user = User.new(email: params[:email], password: params[:password])
+    user = User.new(username: params[:username], email: params[:email], password: params[:password])
     if user.save
       render :json=>
         user.as_json.merge(:auth_token=>user.authentication_token, :email=>user.email), :status=>201
@@ -18,7 +18,6 @@ class Api::V1::RegistrationController < ApplicationController
   def login
     user = User.find_by(email: params[:email])
     if user.valid_password?(params[:password])
-      puts 111
       render json: {
         auth_token: user.authentication_token
       }

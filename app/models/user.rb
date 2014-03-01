@@ -1,5 +1,6 @@
 class User < ActiveRecord::Base
   after_create :init_mongodb
+  validates :username, :uniqueness => true, :presence => true
 
   acts_as_token_authenticatable
 
