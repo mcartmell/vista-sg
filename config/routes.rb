@@ -1,7 +1,7 @@
 Vista::Application.routes.draw do
   devise_for :users
   devise_for :admins
-  root to: 'admin/vistas#list'
+  root to: 'admin/vistas#index'
 
   # client api
   get '/geo/whereami' => 'geo#whereami'
@@ -15,12 +15,13 @@ Vista::Application.routes.draw do
 
   # admin web
   namespace :admin do
-    get '/vistas/new' => 'vistas#new'
-    get '/vistas' => 'vistas#list'
-    get '/vistas/:id' => 'vistas#show'
-    post '/vistas' => 'vistas#create'
-    put '/vistas' => 'vistas#update'
-    delete '/vistas/:id' => 'vistas#remove'
+    resources :vistas
+    resources :photos do
+      member do
+        post 'approve'
+        post 'unapprove'
+      end
+    end
   end
 
   resource :user do

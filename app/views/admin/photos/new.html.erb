@@ -1,0 +1,5 @@
+<%= form_tag '/admin/photos', multipart: true do |form| %>
+  <%= select_tag 'vista_id', options_for_select(@vistas_select) %>
+  <%= file_field_tag 'file' %>
+  <%= submit_tag 'Upload photo' %>
+<% end %>

@@ -2,6 +2,10 @@ module Vista
   class Vistas
     extend Utils
 
+    def self.list
+      coll('vistas').find
+    end
+
     def self.find(vista_id)
       vista = coll('vistas').find_one({
         _id: vista_id

@@ -1,0 +1,19 @@
+<table class="table table-bordered table-condensed">
+<% @photos.each do |vista_id, ps| %>
+  <% vista = Vista::Vistas.find(BSON::ObjectId(vista_id)) %>
+  <tr><th colspan="3"><%= vista['name'] %></th></tr>
+  <% ps.each do |photo| %>
+    <% photo_id = photo['photo_id'].gsub(/\.jpg$/, '') %>
+    <tr><td><%= photo['photo_id']%></td><td><%= photo['user_email'] %></td>
+      <td>
+        <%= link_to 'del', admin_photo_path(photo['photo_id']), method: :delete %>
+        <% if photo['approved'] %>
+          <%= link_to 'unapprove', unapprove_admin_photo_path(photo_id), method: :post %>
+        <% else %>
+          <%= link_to 'approve', approve_admin_photo_path(photo_id), method: :post %>
+        <% end %>
+      </td>
+  </tr>
+  <% end %>
+<% end %>
+</table>

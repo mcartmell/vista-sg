@@ -45,6 +45,17 @@ module Vista
       }
     end
 
+    def remove_photo(vista_id, photo_id)
+      ph = inflate_photo(vista_id, photo_id)
+      [ph[:thumb], ph[:main]].each do |photo|
+        begin
+          photo.remove!
+        rescue Fog::Storage::Rackspace::NotFound => e
+        # fine
+        end
+      end
+    end
+
     def inflate_photos(vista_id, photos)
       ret = []
       photos.each do |photo|

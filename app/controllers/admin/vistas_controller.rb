@@ -4,7 +4,7 @@ class Admin::VistasController < ApplicationController
 
   include Vista::Utils
 
-  def list
+  def index
     @vistas = Vista::Area.all_vistas_by_area_detailed
   end
 
@@ -19,14 +19,13 @@ class Admin::VistasController < ApplicationController
       lon,
       params[:description],
       params[:directions])
-    redirect_to action: 'list'
+    redirect_to :index
   end
 
   def show
     id = BSON::ObjectId(params[:id])
     @vista = Vista::Vistas.find(id)
     @photos = Vista::Vistas.list_photos(id)
-    logger.info(@photos)
   end
 
   def update
@@ -39,12 +38,12 @@ class Admin::VistasController < ApplicationController
       '$set' => set_params
     }
     )
-    redirect_to action: :list
+    redirect_to :index
   end
 
   def remove
     id = BSON::ObjectId(params[:id])
     Vista::Area.remove_vista(id)
-    redirect_to action: 'list'
+    redirect_to :index
   end
 end
