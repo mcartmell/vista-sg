@@ -1,5 +1,5 @@
 <h1>Update vista</h1>
-<%= form_tag('/admin/vistas', method: :put) do %>
+<%= form_tag(admin_vista_path(@vista['_id']), method: :put) do %>
   <%= hidden_field_tag(:id, @vista['_id'].to_s) %>
   <%= text_field_tag(:name, @vista['name'], placeholder: 'name', size: 40) %><br />
   Description:<br />
