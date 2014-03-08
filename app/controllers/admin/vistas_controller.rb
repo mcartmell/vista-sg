@@ -19,7 +19,7 @@ class Admin::VistasController < ApplicationController
       lon,
       params[:description],
       params[:directions])
-    redirect_to :index
+    redirect_to action: :index
   end
 
   def show
@@ -38,12 +38,12 @@ class Admin::VistasController < ApplicationController
       '$set' => set_params
     }
     )
-    redirect_to :index
+    redirect_to action: :index
   end
 
   def remove
     id = BSON::ObjectId(params[:id])
     Vista::Area.remove_vista(id)
-    redirect_to :index
+    redirect_to action: :index
   end
 end
