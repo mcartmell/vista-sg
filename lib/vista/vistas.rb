@@ -23,6 +23,14 @@ module Vista
       return vista
     end
 
+    def self.visits(vista_id)
+      visits = Vista::Visits.where(vista_id: vista_id).to_a
+      users = visits.map{|v| v['email']}.uniq
+      db_users = ::User.where(email: users).index_by(&:email)
+      ret = visits.map{|v| { username: db_users[v['email']].username, date: v['date'].strftime("%Y-%m-%d")}}
+      return ret
+    end
+
     def self.inflate_one(vista, q)
       if q[:lat] && q[:lon]
         coords = vista['geometry']['coordinates']
@@ -30,6 +38,7 @@ module Vista
         vlat = coords[1]
         vista[:dis] = Vista::Geo.haversine(q[:lat].to_f, q[:lon].to_f, vlat, vlon).to_s # string
       end
+      vista[:visits] = visits(vista['_id'])
       vista
     end
 

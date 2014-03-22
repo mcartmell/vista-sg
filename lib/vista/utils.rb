@@ -3,6 +3,10 @@ module Vista
   module Utils
     include Mongo
 
+    def oid(str)
+      BSON::ObjectId(str)
+    end
+
     def coll(name)
       db[name]
     end

@@ -24,3 +24,7 @@ users.ensure_index(:email)
 
 areas = db['vistas']
 areas.ensure_index('photos.user_email')
+
+visits = db['visits']
+visits.ensure_index({username: 1, email: 1}, unique: true)
+

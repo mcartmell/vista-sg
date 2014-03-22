@@ -5,7 +5,7 @@ module Vista
     extend Vista::Utils
 
     def self.insert_mongo(email)
-      coll('users').insert({ email: email, visits: []})
+      coll('users').insert({ email: email })
     end
 
     def self.find(email)
@@ -14,7 +14,6 @@ module Vista
 
     def self.profile_stats(email)
       user = find(email)
-      user['visits'] ||= []
 
       stats = stats_total(email)
       areas_completed = stats.select {|a| a[:pct] == 100}
@@ -26,7 +25,7 @@ module Vista
         total_areas_completed: areas_completed.count,
         total_areas: total_areas,
         total_vistas: total_vistas,
-        total_visits: user['visits'].count
+        total_visits: visits(email).count
       })
     end
 
@@ -48,9 +47,15 @@ module Vista
     end
 
     def self.visits(email)
-      user = coll('users').find_one({ email: email })
-      return [] unless user
-      return user['visits'] || []
+      Vista::Visits.where(email: email).map{|v| v['vista_id']}
+    end
+
+    def self.add_visit(email, vista_id)
+      Vista::Visits.create(email, vista_id)
+    end
+
+    def self.remove_visit(email, vista_id)
+      Vista::Visits.remove(email, vista_id)
     end
 
     # Return statistics on vistas achieved by area
@@ -58,8 +63,8 @@ module Vista
       all_areas = Vista::Area.all_vistas_by_area
       user = find(email)
       user_vistas = {}
-      user['visits'] ||= []
-      user['visits'].each {|v| user_vistas[v.to_s] = 1}
+      visits = visits(email)
+      visits.each {|v| user_vistas[v.to_s] = 1}
       stats = []
       all_areas.each do |area, v|
         total_vistas = v.size
@@ -89,20 +94,5 @@ module Vista
       return inflate_photos(vista_id, photos)
     end
 
-    def self.add_visit(email, vista_id)
-        coll('users').update({
-          email: email
-        },
-          {
-            '$addToSet' =>
-            {
-              'visits' => vista_id
-            }
-          },
-          {
-            upsert: true
-          }
-        )
-    end
   end
 end
